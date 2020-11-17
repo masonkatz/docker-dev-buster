@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+  
+  buster-dev:
+    build:
+      context: .
+    image: buster-dev
+    ports:
+      - "22"
+    volumes:
+      - develop:/develop
+
+volumes:
+  develop:
+    external: true
+
