@@ -1,11 +1,22 @@
-.PHONY: default
-defualt: build
+.PHONY:default
+default:build
 
-id_rsa.pub: ~/.ssh/id_rsa.pub
+PLATFORMS = $(foreach file,$(wildcard */docker-compose.yaml),$(dir $(file)))
+SSHID = id_rsa
+
+id_rsa.pub: ~/.ssh/$(SSHID).pub
 	cp $^ $@
 
-build: Dockerfile docker-compose.yaml id_rsa.pub
-	docker-compose build
 
+.PHONY:build
+build: $(SSHID).pub
+	for platform in $(PLATFORMS); do (cd $$platform && docker-compose build); done
+
+
+.PHONY:clean
 clean:
-	-rm -f id_rsa.pub
+	-rm -f $(SSHID).pub
+
+
+
+
