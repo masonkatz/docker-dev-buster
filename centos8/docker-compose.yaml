@@ -1,7 +1,7 @@
 version: "3"
 
 services:
-  buster-dev:
+  centos8-dev:
     build:
       context: ..
       dockerfile: centos8/Dockerfile
