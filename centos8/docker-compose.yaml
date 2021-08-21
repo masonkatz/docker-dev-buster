@@ -9,11 +9,10 @@ services:
         - USER=${USER}
     image: devbox-centos8
     ports:
-      - "22"
+      - "22001:22"
     volumes:
       - develop:/export
 
 volumes:
   develop:
     external: true
-

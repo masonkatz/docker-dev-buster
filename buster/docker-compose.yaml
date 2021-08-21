@@ -2,6 +2,7 @@ version: "3"
 
 services:
   buster-dev:
+    container_name: buster-dev
     build:
       context: ..
       dockerfile: buster/Dockerfile
@@ -9,11 +10,10 @@ services:
         - USER=${USER}
     image: devbox-buster
     ports:
-      - "22"
+      - "22000:22"
     volumes:
       - develop:/export
 
 volumes:
   develop:
     external: true
-

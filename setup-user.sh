@@ -13,12 +13,18 @@ cp /id_rsa.pub .ssh/authorized_keys
 chmod 700 $HOME
 
 
-git clone https://github.com/masonkatz/env.git
+chezmoi init https://github.com/masonkatz/dotfiles.git
+
 cat > .zshrc <<EOF
-
-echo 'Type "cd env; make clean install" to complete configuration'
-
+echo
+echo
+chezmoi init
+chezmoi apply && zsh
 EOF
 
 chown -R $USER.$USER $HOME
+usermod -a -G wheel $USER
+
+true
+
 
