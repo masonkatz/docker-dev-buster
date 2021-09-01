@@ -1,13 +1,13 @@
 version: "3"
 
 services:
-  centos8-dev:
+  centos-dev:
     build:
       context: ..
-      dockerfile: centos8/Dockerfile
+      dockerfile: centos/Dockerfile
       args:
         - USER=${USER}
-    image: devbox-centos8
+    image: devbox-centos
     ports:
       - "22001:22"
     volumes:
