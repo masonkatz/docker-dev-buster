@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+  alpine-dev:
+    build:
+      context: ..
+      dockerfile: alpine/Dockerfile
+      args:
+        - USER=${USER}
+    image: devbox-alpine
+    ports:
+      - "22002:22"
+    volumes:
+      - develop:/export
+
+volumes:
+  develop:
+    external: true
