@@ -1,4 +1,4 @@
-FROM centos:centos8
+FROM quay.io/centos/centos:stream
 
 ARG USER
 WORKDIR /
@@ -28,6 +28,10 @@ RUN yum install -y \
     sudo \
     tcpdump \
     zsh
+
+RUN curl -sSL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.41.1
+
+RUN curl -sSL -o chezmoi.rpm https://github.com/twpayne/chezmoi/releases/download/v2.1.4/chezmoi-2.1.4-x86_64.rpm; rpm -Uhv chezmoi.rpm; rm chezmoi.rpm
 
 COPY setup-user.sh .
 COPY id_rsa.pub .
