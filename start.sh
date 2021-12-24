@@ -20,7 +20,8 @@ fi
 
 
 if [ "$PLATFORM" = "alpine" ]; then
-	/bin/sed -i -e 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+	sed -i 's/root:\!/root:\*/' /etc/shadow
+	sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 fi
 
    
@@ -38,5 +39,10 @@ for user in *; do
 		chown -R $user.$user /home/$user/.ssh
 	fi
 done
+
+if [ -x /usr/sbin/tailscaled ]; then
+	/usr/sbin/tailscaled &
+fi
+
 
 /usr/sbin/sshd -D
