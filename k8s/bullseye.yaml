@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bullseye-devbox
+  labels:
+    app: bullseye-devbox
+spec:
+  volumes:
+    - name: development
+      persistentVolumeClaim:
+        claimName: devbox
+  containers:
+    - name: bullseye-devbox
+      image: devbox/bullseye:1.0
+      ports:
+        - containerPort: 22
+      env:
+        - name: USER
+          valueFrom:
+            configMapKeyRef:
+              name: devbox
+              key: user
+        - name: DOTFILES
+          valueFrom:
+            configMapKeyRef:
+              name: devbox
+              key: dotfiles
+      volumeMounts:
+        - mountPath: "/export"
+          name: development
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bullseye-devbox
+spec:
+  type: NodePort
+  ports:
+    - port: 22
+      nodePort: 32001
+  selector:
+    app: bullseye-devbox

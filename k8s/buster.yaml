@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: buster-devbox
+  labels:
+    app: buster-devbox
+spec:
+  volumes:
+    - name: development
+      persistentVolumeClaim:
+        claimName: devbox
+  containers:
+    - name: buster-devbox
+      image: devbox/buster:1.0
+      ports:
+        - containerPort: 22
+      env:
+        - name: USER
+          valueFrom:
+            configMapKeyRef:
+              name: devbox
+              key: user
+        - name: DOTFILES
+          valueFrom:
+            configMapKeyRef:
+              name: devbox
+              key: dotfiles
+      volumeMounts:
+        - mountPath: "/export"
+          name: development
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: buster-devbox
+spec:
+  type: NodePort
+  ports:
+    - port: 22
+      nodePort: 32000
+  selector:
+    app: buster-devbox

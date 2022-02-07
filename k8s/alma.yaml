@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: alma-devbox
+  labels:
+    app: alma-devbox
+spec:
+  volumes:
+    - name: development
+      persistentVolumeClaim:
+        claimName: devbox
+  containers:
+    - name: alma-devbox
+      image: devbox/alma:1.0
+      ports:
+        - containerPort: 22
+      env:
+        - name: USER
+          valueFrom:
+            configMapKeyRef:
+              name: devbox
+              key: user
+        - name: DOTFILES
+          valueFrom:
+            configMapKeyRef:
+              name: devbox
+              key: dotfiles
+      volumeMounts:
+        - mountPath: "/export"
+          name: development
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alma-devbox
+spec:
+  type: NodePort
+  ports:
+    - port: 22
+      nodePort: 32003
+  selector:
+    app: alma-devbox

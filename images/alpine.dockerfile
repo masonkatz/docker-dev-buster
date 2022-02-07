@@ -1,6 +1,5 @@
 FROM alpine:latest
 
-ARG USER
 WORKDIR /
 
 EXPOSE 22
@@ -29,17 +28,16 @@ RUN apk add \
     openssh-server \
     python3 \
     shadow \
+    sudo \
     tcpdump \
     util-linux \
     zsh
 
-RUN curl -sSL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.41.1
+RUN curl -sSL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.44.0
 
-COPY setup-user.sh .
+RUN sh -c "$(curl -fsLS chezmoi.io/get)"
+
 COPY id_rsa.pub .
-
-RUN bash -x ./setup-user.sh
-
 COPY start.sh .
 
 

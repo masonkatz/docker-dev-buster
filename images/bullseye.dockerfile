@@ -1,6 +1,5 @@
 FROM debian:bullseye-backports
 
-ARG USER
 WORKDIR /
 
 EXPOSE 22
@@ -21,6 +20,7 @@ RUN apt install -y \
     make \
     openssh-server \
     python3 \
+    sudo \
     tcpdump \
     universal-ctags \
     xorg \
@@ -29,21 +29,16 @@ RUN apt install -y \
 RUN mkdir -p /run/sshd; echo "PermitRootLogin yes" > /etc/ssh/sshd_config
 RUN go get -u golang.org/x/lint/golint; \
     go get -u golang.org/x/tools/cmd/goimports; \
-    go get -u github.com/nsf/gocode; \
     GO111MODULE=on go get golang.org/x/tools/gopls@latest;
-RUN curl -sSL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.41.1
+RUN curl -sSL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.44.0
 
-RUN curl -sSL -o chezmoi.deb https://github.com/twpayne/chezmoi/releases/download/v2.1.4/chezmoi_2.1.4_linux_amd64.deb; dpkg -i chezmoi.deb; rm chezmoi.deb
+RUN sh -c "$(curl -fsLS chezmoi.io/get)"
 
 RUN curl -fsSL https://pkgs.tailscale.com/stable/debian/bullseye.gpg | apt-key add -; \
     curl -fsSL https://pkgs.tailscale.com/stable/debian/bullseye.list | tee /etc/apt/sources.list.d/tailscale.list; \
     apt update; apt install -y tailscale
 
-COPY setup-user.sh .
 COPY id_rsa.pub .
-
-RUN bash -x ./setup-user.sh
-
 COPY start.sh .
 
 CMD [ "/bin/bash", "start.sh", "bullseye" ]
