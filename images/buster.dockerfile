@@ -14,32 +14,35 @@ RUN apt install -y \
     gdb \
     git \
     git-flow \
-    golang \
     httpie \
     ispell \
+    lsb-release \
     make \
     openssh-server \
     python3 \
+    silversearcher-ag \
     sudo \
     tcpdump \
     universal-ctags \
+    vim \
     xorg \
     zsh
 
 RUN mkdir -p /run/sshd; echo "PermitRootLogin yes" > /etc/ssh/sshd_config
-RUN curl -sSfL https://dl.google.com/go/go1.16.8.linux-amd64.tar.gz | tar -C /usr/local -xzf -
-RUN update-alternatives --install /usr/bin/go go /usr/local/go/bin/go 0; \
-    go get -u golang.org/x/lint/golint; \
-    go get -u golang.org/x/tools/cmd/goimports; \
-    GO111MODULE=on go get golang.org/x/tools/gopls@latest;
+RUN sed -i 's/ ALL/ NOPASSWD: ALL/g' /etc/sudoers
+RUN rm /etc/emacs/site-start.d/*
 
-RUN curl -sSL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.44.0
+RUN arch=$(arch | sed s/aarch64/arm64/ | sed s/x86_64/amd64/); \
+    curl -sSfL https://dl.google.com/go/go1.18.2.linux-$arch.tar.gz | tar -C /usr/local -xzf -; \
+    update-alternatives --install /usr/bin/go go /usr/local/go/bin/go 0 --slave /usr/bin/gofmt gofmt /usr/local/go/bin/gofmt; \
+    go install golang.org/x/lint/golint@latest; \
+    go install golang.org/x/tools/cmd/goimports@latest; \
+    go install golang.org/x/tools/gopls@latest; \
+    mv /root/go/bin/* /usr/local/bin;
+
+RUN curl -sSL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b /usr/local/bin v1.46.0
 
 RUN sh -c "$(curl -fsLS chezmoi.io/get)"
-
-RUN curl -fsSL https://pkgs.tailscale.com/stable/debian/buster.gpg | apt-key add -; \
-    curl -fsSL https://pkgs.tailscale.com/stable/debian/buster.list | tee /etc/apt/sources.list.d/tailscale.list; \
-    apt update; apt install -y tailscale
 
 COPY id_rsa.pub .
 COPY start.sh .

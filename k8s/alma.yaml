@@ -37,6 +37,5 @@ spec:
   type: NodePort
   ports:
     - port: 22
-      nodePort: 32003
   selector:
     app: alma-devbox

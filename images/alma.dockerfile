@@ -29,7 +29,7 @@ RUN yum install -y \
     tcpdump \
     zsh
 
-RUN curl -sSL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.44.0
+RUN curl -sSL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.46.0
 
 RUN sh -c "$(curl -fsLS chezmoi.io/get)"
 

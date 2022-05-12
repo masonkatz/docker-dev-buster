@@ -71,9 +71,4 @@ AllowRootLogin
 UserAdd $USER $DOTFILES
 
 
-if [ -x /usr/sbin/tailscaled ]; then
-	/usr/sbin/tailscaled &
-fi
-
-
 /usr/sbin/sshd -D

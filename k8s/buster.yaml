@@ -37,6 +37,5 @@ spec:
   type: NodePort
   ports:
     - port: 22
-      nodePort: 32000
   selector:
     app: buster-devbox

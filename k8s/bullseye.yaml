@@ -37,6 +37,5 @@ spec:
   type: NodePort
   ports:
     - port: 22
-      nodePort: 32001
   selector:
     app: bullseye-devbox
