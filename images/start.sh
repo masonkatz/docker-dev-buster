@@ -32,7 +32,7 @@ function AllowRootLogin() {
 	esac
 	
 	mkdir /root/.ssh
-	cp /id_rsa.pub /root/.ssh/authorized_keys
+	cp /ssh.pub /root/.ssh/authorized_keys
 }
 
 # $1 - Username
@@ -43,7 +43,7 @@ function UserAdd() {
 	chmod 700 .
 	
 	mkdir .ssh
-	cp /id_rsa.pub .ssh/authorized_keys
+	cp /ssh.pub .ssh/authorized_keys
 
 	# If persistent volume has SSH keys, copy them into the user account.
 	if [ -f /export/.ssh/id_rsa ]; then
@@ -59,7 +59,7 @@ function UserAdd() {
 	chown -R $1.$1 .
 
 	case $PLATFORM in
-	buster|bullseye)
+	buster|bullseye|bookworm)
 		usermod -a -G sudo $1
 		;;
 	esac

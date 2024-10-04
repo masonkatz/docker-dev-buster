@@ -9,9 +9,9 @@ help:
 	@echo build - create docker images inside minikube\'s registry 
 
 PLATFORMS = $(foreach file,$(wildcard images/*.dockerfile),$(notdir $(basename $(file))))
-SSHID = id_rsa
+SSHID = id_ed25519
 
-images/id_rsa.pub: ~/.ssh/$(SSHID).pub
+images/ssh.pub: ~/.ssh/$(SSHID).pub
 	cp $^ $@
 
 
