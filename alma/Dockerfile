@@ -1,46 +1,40 @@
-FROM alpine:latest
+FROM almalinux:latest
 
 WORKDIR /
 
 EXPOSE 22
 
-RUN apk update; apk upgrade
-RUN apk add \
-    bash \
-    binutils \
-    chezmoi \
-    coreutils \
+
+RUN yum upgrade -y
+RUN dnf install -y epel-release
+
+RUN yum install -y \
     ctags \
-    curl \
     emacs \
     figlet \
-    findutils \
     gcc \
     gdb \
     git \
-    go \
-    grep \
-    httpie \
-    less \
+    golang \
     make \
-    ncurses \
-    openssh-client \
     openssh-server \
+    passwd \
     python3 \
-    shadow \
+    rpm-build \
+    rpmlint \
+    rpm-devel \
+    rpmdevtools \
     sudo \
     tcpdump \
-    util-linux \
     zsh
 
 RUN curl -sSL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.46.0
 
 RUN sh -c "$(curl -fsLS chezmoi.io/get)"
 
-COPY id_rsa.pub .
+COPY ssh.pub .
 COPY start.sh .
 
-
-CMD [ "/bin/bash", "start.sh", "alpine" ]
+CMD [ "/bin/bash", "start.sh", "alma" ]
 
 

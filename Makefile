@@ -1,32 +1,19 @@
-.DEFAULT_GOAL=help
+.PHONY:default
+default:build
 
-VERSION=1.0
-
-.PHONY:help
-help:
-	@echo Please make sure minikube is already started
-	@echo
-	@echo build - create docker images inside minikube\'s registry 
-
-PLATFORMS = $(foreach file,$(wildcard images/*.dockerfile),$(notdir $(basename $(file))))
+PLATFORMS = $(foreach file,$(wildcard */docker-compose.yaml),$(dir $(file)))
 SSHID = id_ed25519
 
-images/ssh.pub: ~/.ssh/$(SSHID).pub
+ssh.pub: ~/.ssh/$(SSHID).pub
 	cp $^ $@
 
 
 .PHONY:build
-build: images/$(SSHID).pub
-	@cd images && for platform in $(PLATFORMS); do \
-		echo; \
-		echo Building: $$platform; \
-		echo; \
-		minikube image build -t devbox/$$platform:$(VERSION) -f $$platform.dockerfile .; \
-	done
+build: ssh.pub
+	for platform in $(PLATFORMS); do (cd $$platform && docker-compose build); done
 
 
 .PHONY:clean
 clean:
-	-rm -f images/$(SSHID).pub
-
+	-rm -f ssh.pub
 

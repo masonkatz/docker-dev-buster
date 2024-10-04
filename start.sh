@@ -25,13 +25,15 @@ function AllowRootLogin() {
 	alpine)
 		sed -i 's/root:\!/root:\*/' /etc/shadow
 		sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+		mkdir /root/.ssh
 		;;
 	alma)
-		rm /run/nologin
+		mkdir /root/.ssh
+		;;
+	bookworm)
 		;;
 	esac
 	
-	mkdir /root/.ssh
 	cp /ssh.pub /root/.ssh/authorized_keys
 }
 
@@ -56,10 +58,11 @@ function UserAdd() {
 	echo "chezmoi init $2" > .zshrc
 	echo "chezmoi apply && zsh" >> .zshrc
 	
-	chown -R $1.$1 .
+	chown -R $1 .
+	chgrp -R $1 .
 
 	case $PLATFORM in
-	buster|bullseye|bookworm)
+	bookworm)
 		usermod -a -G sudo $1
 		;;
 	esac
